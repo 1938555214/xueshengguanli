@@ -1,0 +1,549 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <string.h>
+#pragma warning(disable : 4996)
+
+#define NameSize  30
+#define SexSize  10
+
+typedef struct student
+{
+	int nStudentNum;
+	char cName[NameSize];
+	char cSex[SexSize];
+	int nAge;
+	float fMathAchieve;
+	float fChineAchieve;
+	float fEngAchieve;
+	float fTotalScore;
+}student;
+
+typedef struct linklist {
+	student date;
+	struct linklist* next;
+}linklist;
+
+struct linklist* head = NULL;
+struct linklist* tail = NULL;
+
+student stustudent[SexSize] =
+{
+	{1,"徐洪达","男",20,80,60,80} ,
+	{2,"张倩","女",18,95,95,90},
+	{3,"柴苑苑","女",19,95,98,90},
+	{4,"刘斌","男",21,90,95,95},
+	{5,"赵文龙","男",20,96,95,99},
+	{6,"刘永成","男",22,98,90,90},
+	{7,"马鑫","女",18,98,95,99},
+	{8,"张丹","女",20,95,95,90},
+	{9,"韩艳文","女",19,85,99,99},
+	{10,"梁彬彬","男",20,95,90,95}
+};
+
+int i = 0;
+
+void MainInterface()//主界面
+{
+	system("cls");
+	printf("**********欢迎使用学生信息管理系统（当前共有%02d名学生）**********\n", i);
+	printf("*                                                              *\n");
+	printf("*              ---------------------------------               *\n");
+	printf("*              |     Powered By 软件工程系     |               *\n");
+	printf("*              | 郑州工程技术学院 信息工程学院 |               *\n");
+	printf("*              | 第十组   组员：孙家玉  王佳豪 |               *\n");
+	printf("*              |    金雨欣  宋梦菊  郭春阳     |               *\n");
+	printf("*              ---------------------------------               *\n");
+	printf("*                                                              *\n");
+	printf("*              1.添加学生信息                                  *\n");
+	printf("*              2.删除学生信息（根据学号）                      *\n");
+	printf("*              3.修改学生信息（根据学号）                      *\n");
+	printf("*              4.查询学生信息                                  *\n");
+	printf("*              5.显示所有学生信息以及统计信息                  *\n");
+	printf("*              0.退出软件                                      *\n");
+	printf("*                                                              *\n");
+	printf("****************************************************************\n");
+}
+
+void SearchInterface()//查找界面
+{
+	printf("********查询学生信息（当前共有%02d名学生）********\n", i);
+	printf("*                                              *\n");
+	printf("*       1.根据学号查询                         *\n");
+	printf("*       2.根据姓名查询                         *\n");
+	printf("*       3.根据数学成绩查询                     *\n");
+	printf("*       4.根据语文成绩查询                     *\n");
+	printf("*       5.根据英语成绩查询                     *\n");
+	printf("*       6.根据总成绩查询                       *\n");
+	printf("*       0.返回主菜单                           *\n");
+	printf("*                                              *\n");
+	printf("************************************************\n");
+}
+
+void AddInfo(linklist* head)//添加信息
+{
+	MainInterface();
+	int t = 0;
+
+	int nstudentnum;
+	char cname[NameSize];
+	char csex[SexSize];
+	int nage;
+	float fmathachieve;
+	float fchineachieve;
+	float fengachieve;
+	float ftotalscore;
+
+	printf("输入学号：");
+	scanf_s("%d", &nstudentnum);
+	printf("输入姓名：");
+	scanf_s("%s", cname, NameSize);
+	printf("输入性别：");
+	scanf_s("%s", csex, SexSize);
+	printf("输入年龄：");
+	scanf_s("%d", &nage);
+	printf("数学成绩：");
+	scanf_s("%f", &fmathachieve);
+	printf("语文成绩：");
+	scanf_s("%f", &fchineachieve);
+	printf("英语成绩：");
+	scanf_s("%f", &fengachieve);
+	ftotalscore = fmathachieve + fchineachieve + fengachieve;
+
+	linklist* q = (linklist*)malloc(sizeof(linklist));
+	q->next = NULL;
+	linklist* p;
+	p = head;
+
+	while (p->next != NULL) 
+	{
+		if (p->date.nStudentNum == nstudentnum)
+		{
+			printf("错误：该学生信息已存在，无需重复添加！按任意键返回");
+			break;
+		}
+		p = p->next;
+	}
+
+	if (p->next == NULL) 
+	{
+		q->date.nStudentNum = nstudentnum;
+		strcpy(q->date.cName, cname);
+		strcpy(q->date.cSex, csex);
+		q->date.nAge = nage;
+		q->date.fMathAchieve = fmathachieve;
+		q->date.fChineAchieve = fchineachieve;
+		q->date.fEngAchieve = fengachieve;
+		q->date.fTotalScore = ftotalscore;
+		p->next = q;
+		p = q;
+
+		i += 1;
+
+		printf("提示：添加成功！按任意键返回");
+	}
+
+	getch();
+	system("cls");
+}
+
+void SearchInfo(linklist* head)//查找信息
+{
+	int t = 0, x = 0, y = 0,k = 0;
+	int nStudentNum = 0;
+	float m = 0, n = 0;
+	char cName[NameSize] = { 0 };
+
+	linklist* p;
+	p = (linklist*)malloc(sizeof(linklist));
+
+	while (true)
+	{
+		SearchInterface();
+		scanf_s("%d", &t);
+
+		m = 0;
+		n = 0;
+		nStudentNum = 0;
+		k = 0;
+
+		p = head->next;
+
+		switch (t)
+		{
+		case 6:
+		{
+			system("cls");
+			SearchInterface();
+			printf("要查询的总成绩范围：");
+			scanf_s("%f%f", &m, &n);
+			printf("------------------------------------------------------------------------\n");
+			printf("  学号  |  姓名  |  性别  |  年龄  |  数学  |  语文  |  英语  | 总成绩 \n");
+			printf("--------+--------+--------+--------+--------+--------+--------+---------\n");
+			
+			while (p != NULL)
+			{
+				if (p->date.fTotalScore >= m && p->date.fTotalScore <= n)
+				{
+					printf("   %02d   | %-6s |   %s   |   %d   |%6.2f  |%6.2f  |%6.2f  | %.2f\n", p->date.nStudentNum, p->date.cName, p->date.cSex, p->date.nAge, p->date.fMathAchieve, p->date.fChineAchieve, p->date.fEngAchieve, p->date.fTotalScore);
+					nStudentNum += 1;
+				}
+				p = p->next;
+			}
+	
+			printf("------------------------------------------------------------------------\n");
+			printf("共查询到%d条记录。按任意键返回", nStudentNum);
+			getch();
+			system("cls");
+			break;
+		}
+		case 5:
+		{
+			system("cls");
+			SearchInterface();
+			printf("要查询的英语成绩范围：");
+			scanf_s("%f%f", &m, &n);
+			printf("------------------------------------------------------------------------\n");
+			printf("  学号  |  姓名  |  性别  |  年龄  |  数学  |  语文  |  英语  | 总成绩 \n");
+			printf("--------+--------+--------+--------+--------+--------+--------+---------\n");
+
+			while (p != NULL)
+			{
+				if (p->date.fEngAchieve >= m && p->date.fEngAchieve <= n)
+				{
+					printf("   %02d   | %-6s |   %s   |   %d   |%6.2f  |%6.2f  |%6.2f  | %.2f\n", p->date.nStudentNum, p->date.cName, p->date.cSex, p->date.nAge, p->date.fMathAchieve, p->date.fChineAchieve, p->date.fEngAchieve, p->date.fTotalScore);
+					nStudentNum += 1;
+				}
+				p = p->next;
+			}
+
+			printf("------------------------------------------------------------------------\n");
+			printf("共查询到%d条记录。按任意键返回", nStudentNum);
+			getch();
+			system("cls");
+
+			break;
+		}
+		case 4:
+		{
+			system("cls");
+			SearchInterface();
+			printf("要查询的语文成绩范围：");
+			scanf_s("%f%f", &m, &n);
+			printf("------------------------------------------------------------------------\n");
+			printf("  学号  |  姓名  |  性别  |  年龄  |  数学  |  语文  |  英语  | 总成绩 \n");
+			printf("--------+--------+--------+--------+--------+--------+--------+---------\n");
+
+			while (p != NULL)
+			{
+				if (p->date.fChineAchieve >= m && p->date.fChineAchieve <= n)
+				{
+					printf("   %02d   | %-6s |   %s   |   %d   |%6.2f  |%6.2f  |%6.2f  | %.2f\n", p->date.nStudentNum, p->date.cName, p->date.cSex, p->date.nAge, p->date.fMathAchieve, p->date.fChineAchieve, p->date.fEngAchieve, p->date.fTotalScore);
+					nStudentNum += 1;
+				}
+				p = p->next;
+			}
+
+			printf("------------------------------------------------------------------------\n");
+			printf("共查询到%d条记录。按任意键返回", nStudentNum);
+			getch();
+			system("cls");
+			break;
+		}
+		case 3:
+		{
+			system("cls");
+			SearchInterface();
+			printf("要查询的数学成绩范围：");
+			scanf_s("%f%f", &m, &n);
+			printf("------------------------------------------------------------------------\n");
+			printf("  学号  |  姓名  |  性别  |  年龄  |  数学  |  语文  |  英语  | 总成绩 \n");
+			printf("--------+--------+--------+--------+--------+--------+--------+---------\n");
+
+			while (p != NULL)
+			{
+				if (p->date.fMathAchieve >= m && p->date.fMathAchieve <= n)
+				{
+					printf("   %02d   | %-6s |   %s   |   %d   |%6.2f  |%6.2f  |%6.2f  | %.2f\n", p->date.nStudentNum, p->date.cName, p->date.cSex, p->date.nAge, p->date.fMathAchieve, p->date.fChineAchieve, p->date.fEngAchieve, p->date.fTotalScore);
+					nStudentNum += 1;
+				}
+				p = p->next;
+			}
+
+			printf("------------------------------------------------------------------------\n");
+			printf("共查询到%d条记录。按任意键返回", nStudentNum);
+			getch();
+			system("cls");
+			break;
+		}
+		case 2:
+		{
+			system("cls");
+			SearchInterface();
+			printf("输入姓名：");
+			scanf_s("%s", cName, NameSize);
+
+			while (p != NULL)
+			{
+				if (strcmp(cName, p->date.cName) == 0)
+				{
+					k = k + 1;
+					printf("------------------------------------------------------------------------\n");
+					printf("  学号  |  姓名  |  性别  |  年龄  |  数学  |  语文  |  英语  | 总成绩 \n");
+					printf("--------+--------+--------+--------+--------+--------+--------+---------\n");
+					printf("   %02d   | %-6s |   %s   |   %d   |%6.2f  |%6.2f  |%6.2f  | %.2f\n", p->date.nStudentNum, p->date.cName, p->date.cSex, p->date.nAge, p->date.fMathAchieve, p->date.fChineAchieve, p->date.fEngAchieve, p->date.fTotalScore);
+					printf("------------------------------------------------------------------------\n");
+					break;
+				}
+				p = p->next;
+			}
+
+			if (k == 0)
+			{
+				printf("错误：未查询到该学生。");
+			}
+			printf("按任意键返回");
+			getch();
+			system("cls");
+			break;
+		}
+		case 1:
+		{
+			system("cls");
+			SearchInterface();
+			printf("输入学号：");
+			scanf_s("%d", &x);
+
+			while (p != NULL)
+			{
+				if (x == p->date.nStudentNum)
+				{
+					k = k + 1;
+					printf("------------------------------------------------------------------------\n");
+					printf("  学号  |  姓名  |  性别  |  年龄  |  数学  |  语文  |  英语  | 总成绩 \n");
+					printf("--------+--------+--------+--------+--------+--------+--------+---------\n");
+					printf("   %02d   | %-6s |   %s   |   %d   |%6.2f  |%6.2f  |%6.2f  | %.2f\n", p->date.nStudentNum, p->date.cName, p->date.cSex, p->date.nAge, p->date.fMathAchieve, p->date.fChineAchieve, p->date.fEngAchieve, p->date.fTotalScore);
+					printf("------------------------------------------------------------------------\n");
+					break;
+				}
+				p = p->next;
+			}
+
+			if (k == 0)
+			{
+				printf("错误：未查询到该学生。");
+			}
+			printf("按任意键返回");
+			getch();
+			system("cls");
+			break;
+		}
+		case 0:
+		{
+			system("cls");
+			break;
+		}
+		}
+
+		if (t == 0)
+			break;
+	}
+}
+
+void DeletInfo(linklist* head)//删除信息
+{
+	int x = 0, y = 0;
+	system("cls");
+	MainInterface();
+	printf("输入学号：");
+	scanf_s("%d", &x);
+
+	linklist* p, * q;
+	p = (linklist*)malloc(sizeof(linklist));
+	q = (linklist*)malloc(sizeof(linklist));
+	p = head;
+	q = p->next;
+
+	while (q != NULL) 
+	{
+		if (x == q->date.nStudentNum)
+		{
+			y = y + 1;
+			p->next = q->next;
+			free(q);
+			i -= 1;
+			printf("提示：删除成功，按任意键返回");
+
+			break;
+		}
+		p = q;
+		q = q->next;
+	}
+
+	if (y == 0)
+	{
+		printf("错误：该学生信息不存在，删除失败！按任意键返回");
+	}
+	getch();
+	system("cls");
+}
+
+void ModifyInfo(linklist* head)//修改信息
+{
+	int x = 0, y = 0, k = 0;
+	system("cls");
+	MainInterface();
+	printf("输入学号：");
+	scanf_s("%d", &x);
+
+	linklist* p;
+	p = (linklist*)malloc(sizeof(linklist));
+	p = head->next;
+	while (p != NULL) 
+	{
+		if (x == p->date.nStudentNum)
+		{
+			k = k + 1;
+			printf("输入姓名：");
+			scanf_s("%s", p->date.cName, NameSize);
+			printf("输入性别：");
+			scanf_s("%s", p->date.cSex, SexSize);
+			printf("输入年龄：");
+			scanf_s("%d", &p->date.nAge);
+			printf("数学成绩：");
+			scanf_s("%f", &p->date.fMathAchieve);
+			printf("语文成绩：");
+			scanf_s("%f", &p->date.fChineAchieve);
+			printf("英语成绩：");
+			scanf_s("%f", &p->date.fEngAchieve);
+			p->date.fTotalScore = p->date.fMathAchieve + p->date.fChineAchieve + p->date.fEngAchieve;
+			printf("提示：修改成功！按任意键返回");
+			break;
+		}
+		p = p->next;
+	}
+
+	if (k == 0)
+	{
+		printf("错误：该学生信息不存在，修改失败！按任意键返回");
+	}
+	getch();
+	system("cls");
+}
+
+void ShowAllInfo(linklist* head)//显示所有信息
+{
+
+	linklist* p;
+	p = (linklist*)malloc(sizeof(linklist));
+	p = head->next;
+
+	float fAge = 0, fMathAchieve = 0, fChineAchieve = 0, fEngAchieve = 0, fTotalScore = 0;
+	char cSex[SexSize] = { "男" };
+	int nan = 0, nv = 0;
+	printf("------------------------------------------------------------------------\n");
+	printf("  学号  |  姓名  |  性别  |  年龄  |  数学  |  语文  |  英语  | 总成绩 \n");
+	printf("--------+--------+--------+--------+--------+--------+--------+---------\n");
+
+	while (p != NULL)
+	{
+		printf("   %02d   | %-6s |   %s   |   %d   |%6.2f  |%6.2f  |%6.2f  | %.2f\n", p->date.nStudentNum, p->date.cName, p->date.cSex, p->date.nAge, p->date.fMathAchieve, p->date.fChineAchieve, p->date.fEngAchieve, p->date.fTotalScore);
+		fAge += p->date.nAge;
+		fMathAchieve += p->date.fMathAchieve;
+		fChineAchieve += p->date.fChineAchieve;
+		fEngAchieve += p->date.fEngAchieve;
+		fTotalScore += p->date.fTotalScore;
+		if (strcmp(cSex, p->date.cSex) == 0)
+			nan += 1;
+		else
+			nv += 1;
+		p = p->next;
+	}
+
+	printf("--------+--------+--------+--------+--------+--------+--------+---------\n");
+	printf("   --   |   --   |   %d/%d  |  %5.2f |%6.2f  |%6.2f  |%6.2f  | %.2f  \n", nan, nv, fAge / i, fMathAchieve / i, fChineAchieve / i, fEngAchieve / i, fTotalScore / i);
+	printf("------------------------------------------------------------------------\n");
+	printf("共有%d条学生信息，按任意键返回", i);
+	getch();
+	system("cls");
+}
+
+void InitialiInfo(linklist* head)
+{
+	linklist* p;
+	p = head;
+
+	if (p->next == NULL)
+	{
+		for (int n = 0; n < SexSize; n++)
+		{
+			linklist* q = (linklist*)malloc(sizeof(linklist));
+			q->next = NULL;
+
+			q->date.nStudentNum = stustudent[n].nStudentNum;
+			strcpy(q->date.cName, stustudent[n].cName);
+			strcpy(q->date.cSex, stustudent[n].cSex);
+			q->date.nAge = stustudent[n].nAge;
+			q->date.fMathAchieve = stustudent[n].fMathAchieve;
+			q->date.fChineAchieve = stustudent[n].fChineAchieve;
+			q->date.fEngAchieve = stustudent[n].fEngAchieve;
+			q->date.fTotalScore = stustudent[n].fMathAchieve + stustudent[n].fChineAchieve + stustudent[n].fEngAchieve;
+			p->next = q;
+			p = q;
+			i += 1;
+		}
+	}
+}
+
+int main()
+{
+	head = (linklist*)malloc(sizeof(linklist));
+	head->next = NULL;
+
+	InitialiInfo(head);
+
+	int t;
+	while (true)
+	{
+		system("cls");
+		MainInterface();
+		scanf_s("%d", &t);
+		system("cls");
+		switch (t)
+		{
+		case 5:
+		{
+			ShowAllInfo(head);
+			break;
+		}
+		case 4:
+		{
+			SearchInfo(head);
+			break;
+		}
+		case 3:
+		{
+			ModifyInfo(head);
+			break;
+		}
+		case 2:
+		{
+			DeletInfo(head);
+			break;
+		}
+		case 1:
+		{
+			AddInfo(head);
+			break;
+		}
+		case 0:
+		{
+			MainInterface();
+			break;
+		}
+		}
+		if (t == 0)
+			break;
+	}
+	return 0;
+}
